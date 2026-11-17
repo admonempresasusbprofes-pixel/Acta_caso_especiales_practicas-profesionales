@@ -1,0 +1,339 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actas de casos especiales – Prácticas Profesionales USB</title><style>
+  :root{ --orange:#E87722; --ink:#1a1a1a; --grey-head:#D9D9D9; --grey-label:#F2F2F2; --page-bg:#e9e9e6; --ok:#2f6f4f; }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--page-bg); color:var(--ink); font-family:'Calibri','Segoe UI',Arial,sans-serif; font-size:14px;}
+  .toolbar{background:#1a1a1a; color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  .toolbar .t{font-size:13px; letter-spacing:.3px;}
+  .toolbar .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .chip{font-size:11.5px; padding:4px 10px; border-radius:12px; background:#333; color:#ddd;}
+  .chip.on{background:#1E4530; color:#cfe9da;}
+  button.btn{font-family:inherit; font-weight:600; font-size:13px; padding:8px 14px; border-radius:3px; border:1px solid var(--orange); background:var(--orange); color:#fff; cursor:pointer;}
+  button.btn.ghost{background:transparent; color:#fff; border:1px solid #777;}
+  button.btn:disabled{opacity:.4; cursor:not-allowed;}
+  .codigo-bar{max-width:850px; margin:14px auto 0; background:#eef3f0; border:1px solid #2f6f4f; border-radius:4px; padding:12px 18px; font-size:13px; color:#1e4530; display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center;}
+  .codigo-bar input{padding:8px 10px; font-size:14px; border:1px solid #9bb8a8; border-radius:3px; width:120px; font-family:inherit;}
+  .codigo-bar .btn-sm{font-size:12.5px; padding:8px 14px; border-radius:3px; border:1px solid #2f6f4f; background:#2f6f4f; color:#fff; cursor:pointer; font-weight:600; font-family:inherit;}
+  .codigo-bar .estado-carga{font-size:12.5px; font-weight:600;}
+  .sheet{max-width:850px; margin:20px auto 60px; background:#fff; border:1px solid #999; padding:26px 34px 34px; box-shadow:0 2px 6px rgba(0,0,0,.15);}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .letterhead-table{width:100%; border-collapse:collapse; margin-bottom:18px;}
+  .letterhead-table td{border:1px solid var(--orange); padding:4px 10px; vertical-align:middle; font-size:12.5px; text-align:center;}
+  .letterhead-table .logo-cell{width:110px; padding:6px;}
+  .letterhead-table .logo-cell img{max-width:85px; max-height:78px;}
+  .letterhead-table .proc-title{font-weight:700; font-size:13.5px;}
+  .letterhead-table .side-cell{width:120px;}
+  table{width:100%; border-collapse:collapse; margin-bottom:14px;}
+  td,th{border:1px solid var(--orange); padding:6px 8px; vertical-align:top; font-size:13px; text-align:left;}
+  .title-row td{background:var(--grey-head); font-weight:700; font-size:13.5px;}
+  .title-row td:last-child{width:190px; text-align:center;}
+  .section-head td{background:var(--grey-head); font-weight:700; text-align:center;}
+  .label-cell{background:var(--grey-label); font-weight:600; width:38%;}
+  .value-cell input,.value-cell select{width:100%; border:none; font-family:inherit; font-size:13px; padding:2px; background:#fff8f0; border-bottom:1px dashed var(--orange);}
+  .value-cell input:focus,.value-cell select:focus{outline:1.5px solid var(--orange);}
+  .just{text-align:justify;}
+  .just p{margin:0 0 7px;}
+  .constancia{margin:14px 0 6px; font-size:13.5px;}
+  .sig-table th{background:var(--grey-head); font-size:12.5px; text-align:center;}
+  .sig-table td{text-align:center; font-size:12.5px; vertical-align:middle;}
+  .sig-table input{width:100%; border:none; font-size:12.5px; text-align:center; font-family:inherit; background:#fff8f0; border-bottom:1px dashed var(--orange);}
+  .sig-table input:focus{outline:1.5px solid var(--orange);}
+  .sig-cell{min-width:140px;}
+  .sig-cell img{max-height:42px; max-width:130px;}
+  .sig-cell button{font-size:11px; padding:5px 10px; border-radius:3px; border:1px solid var(--orange); background:#fff; color:var(--orange); cursor:pointer; font-weight:600;}
+  .sig-code{font-size:8.5px; color:#888; font-family:monospace; margin-top:2px; word-break:break-all;}
+  .envio{font-size:9.5px; margin-top:2px; font-weight:600;}
+  .envio.ok{color:var(--ok);} .envio.no{color:#9A3B00;}
+  .footnote{font-size:11.5px; color:#333; margin-top:16px; line-height:1.5;}
+  #estadoFirmas{margin-top:8px; font-size:12.5px; font-weight:600; color:var(--ok);}
+  .vacio{color:#777; text-align:center; padding:40px 10px; font-size:14px;}
+  .modal-overlay{position:fixed; inset:0; background:rgba(20,20,20,.55); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff; border-radius:4px; width:100%; max-width:460px; padding:20px; border:1px solid #ccc;}
+  .modal h3{margin:0 0 4px; font-size:16px;}
+  .modal p.hint{margin:0 0 10px; font-size:12px; color:#555;}
+  canvas#sigPad{width:100%; height:150px; border:1.5px dashed #aaa; border-radius:3px; background:repeating-linear-gradient(#fff,#fff 26px,#eee 27px); touch-action:none; cursor:crosshair;}
+  .modal .chk{display:flex; gap:8px; align-items:flex-start; margin-top:10px; font-size:12.5px;}
+  .modal-actions{display:flex; gap:8px; margin-top:14px; justify-content:flex-end;}
+  .modal-actions button{font-family:inherit; font-weight:600; font-size:13px; padding:8px 14px; border-radius:3px; cursor:pointer;}
+  .b-pri{background:var(--orange); color:#fff; border:1px solid var(--orange);}
+  .b-sec{background:#fff; color:var(--orange); border:1px solid var(--orange);}
+  #modalMsg{margin-top:8px; font-size:12px; color:#9A3B00; font-weight:600;}
+  @media print{ .toolbar,.codigo-bar,.no-print{display:none !important;} body{background:#fff;} .sheet{box-shadow:none; border:none; margin:0; max-width:none;} }
+  @media (max-width:640px){
+    body{font-size:13px;}
+    .toolbar{padding:10px 12px; flex-direction:column; align-items:stretch;}
+    .toolbar .t{text-align:center;}
+    .toolbar .actions{justify-content:center;}
+    .codigo-bar{margin:10px 12px 0; padding:10px 12px; flex-direction:column; align-items:stretch;}
+    .codigo-bar input{width:auto;}
+    .sheet{padding:14px 12px 22px; margin:12px auto 40px;}
+    .letterhead-table .logo-cell{width:70px;} .letterhead-table .logo-cell img{max-width:54px; max-height:50px;}
+    .letterhead-table td{padding:3px 4px; font-size:10.5px;}
+    td,th{padding:5px 6px; font-size:12px;}
+    .title-row td:last-child{width:auto;}
+    .sig-table{min-width:600px;}
+    .modal{padding:16px;}
+  }
+</style></head><body>
+
+<div class="toolbar no-print">
+  <div class="t" id="tituloBarra">ACTAS DE CASOS ESPECIALES · PRÁCTICAS PROFESIONALES</div>
+  <div class="actions">
+    <span class="chip" id="chipHoja">Hoja: sin conectar</span>
+    <button class="btn ghost" type="button" onclick="window.print()">Imprimir / PDF</button>
+    <button class="btn" type="button" id="btnDescargar" disabled>Descargar acta</button>
+  </div>
+</div>
+
+<div class="codigo-bar no-print" id="codigoBar">
+  <b>Número del acta:</b>
+  <input type="text" id="nActa" placeholder="Ej.: 03" inputmode="numeric" autocomplete="off">
+  <button class="btn-sm" type="button" id="btnCargar">Cargar acta</button>
+  <span class="estado-carga" id="cargaMsg">Escribe el número del acta y pulsa "Cargar acta".</span>
+</div>
+
+<div class="sheet">
+  <table class="letterhead-table">
+    <tr>
+      <td class="logo-cell" rowspan="2"><img src="data:image/jpeg;base64,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" alt="Universidad de San Buenaventura"></td>
+      <td class="proc-title">Proceso de Aseguramiento de la Calidad</td>
+      <td class="side-cell" colspan="2">Código:<br><b>2-1120-SIG-F8</b></td>
+    </tr>
+    <tr>
+      <td class="proc-title">Acta de Reunión</td>
+      <td class="side-cell">Fecha:<br><b>03-Jun-2025</b></td>
+      <td class="side-cell">Versión:<br><b>2</b></td>
+    </tr>
+  </table>
+  <div id="contenido"><div class="vacio">Carga un acta con su número para ver su contenido.</div></div>
+</div>
+
+<div class="modal-overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modalTitulo">Firmar</h3>
+    <p class="hint">Dibuja tu firma con el dedo o con el mouse.</p>
+    <canvas id="sigPad"></canvas>
+    <label class="chk"><input type="checkbox" id="acepta"> <span>Declaro que leí el contenido de esta acta y la firmo en señal de conformidad.</span></label>
+    <div id="modalMsg"></div>
+    <div class="modal-actions">
+      <button type="button" class="b-sec" id="btnBorrar">Borrar</button>
+      <button type="button" class="b-sec" id="btnCancelar">Cancelar</button>
+      <button type="button" class="b-pri" id="btnOk">Firmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONEXIÓN CON TU HOJA DE GOOGLE (Apps Script)
+   Pega entre las comillas la URL de tu aplicación web, la que
+   termina en /exec. Con ella:
+   - el acta carga los datos de la estudiante desde la pestaña
+     "Actas" de tu hoja, usando el número del acta, y
+   - cada firma queda registrada en la pestaña "Firmas".
+   Sin ella, el archivo solo conoce las actas 03 y 04 (incluidas
+   de respaldo) y las firmas no se guardan en la hoja.
+   ============================================================ */
+var API_URL = '';
+
+var ACTAS_LOCAL = {"03": {"id": "03", "titulo": "ACTA DE RECONOCIMIENTO Y CIERRE DE PRÁCTICA PROFESIONAL — CASO ESPECIAL", "estudiante": {"nombre": "Paula Garzón", "documento": "", "programa": "", "correo": "", "escenario": "Facultad de Ciencias Económicas y Administrativas (período 2026-1)"}, "reunion": {"fecha": "16/11/2026", "lugar": "En línea — firma electrónica", "horaInicio": "No aplica", "horaFin": "No aplica"}, "orden": ["Verificación de la práctica profesional desarrollada.", "Reconocimiento y registro de la calificación definitiva.", "Situación administrativa pendiente (inscripción de la asignatura).", "Compromisos y firmas."], "desarrollo": [["Antecedentes", "El caso se registró en el Acta Informativa de Estado de Prácticas Profesionales, Casos Especiales y Productos de Investigación del Programa de Contaduría Pública (fecha de corte: 31 de julio de 2026), numeral 3.1."], ["Verificación de la práctica", "La estudiante desarrolló su práctica profesional al interior de la Facultad de Ciencias Económicas y Administrativas de la Universidad de San Buenaventura Bogotá y la culminó exitosamente el 30 de junio de 2026."], ["Reconocimiento y calificación definitiva", "Se reconoce la práctica profesional desarrollada y se deja constancia de que la estudiante obtuvo una calificación definitiva de 4,0 (cuatro coma cero)."], ["Situación administrativa pendiente", "Al momento de iniciar la práctica, la estudiante no había formalizado la inscripción de la asignatura de Práctica Profesional. Se mantiene la necesidad de regularizar el proceso administrativo correspondiente para efectos del registro académico definitivo, conforme a lo que dispongan las instancias académicas competentes."], ["Cierre", "Con la firma de la presente acta se deja constancia del reconocimiento de la práctica profesional y de la calificación obtenida. El registro definitivo en el sistema académico queda sujeto a la regularización descrita en el numeral 4. El documento de identidad y el programa son registrados por la estudiante al momento de firmar."]], "compromisos": [["Regularizar la inscripción de la asignatura de Práctica Profesional.", "Harvey Sanabria", "17/11/2026"], ["Cargar la calificación definitiva (4,0) en el sistema académico una vez regularizada la inscripción.", "Harvey Sanabria", "17/11/2026"]], "firmantes": [{"rol": "Coordinación de Prácticas", "nombre": "Harvey Sanabria", "cargo": "Coordinación de Prácticas", "correo": "jsanabria@usbbog.edu.co"}, {"rol": "Estudiante", "nombre": "Paula Garzón", "cargo": "Estudiante", "correo": ""}]}, "04": {"id": "04", "titulo": "ACTA DE RECONOCIMIENTO Y CIERRE DE PRÁCTICA PROFESIONAL — CASO ESPECIAL", "estudiante": {"nombre": "Jessica Alejandra Valbuena Franco", "documento": "30000093776", "programa": "Contaduría Pública", "correo": "javalbuenaf@academia.usbbog.edu.co", "escenario": "Facultad de Ciencias Económicas y Administrativas (período 2026-1)"}, "reunion": {"fecha": "16/11/2026", "lugar": "En línea — firma electrónica", "horaInicio": "No aplica", "horaFin": "No aplica"}, "orden": ["Verificación de la práctica profesional desarrollada.", "Reconocimiento y registro de la calificación definitiva.", "Solicitud de reconocimiento de la práctica en dos programas.", "Compromisos y firmas."], "desarrollo": [["Antecedentes", "El caso se registró en el Acta Informativa de Estado de Prácticas Profesionales, Casos Especiales y Productos de Investigación del Programa de Contaduría Pública (fecha de corte: 31 de julio de 2026), numeral 3.2."], ["Verificación de la práctica", "La estudiante desarrolló su práctica profesional al interior de la Facultad de Ciencias Económicas y Administrativas de la Universidad de San Buenaventura Bogotá y la culminó satisfactoriamente el 24 de julio de 2026."], ["Reconocimiento y calificación definitiva", "La Directora del Programa de Contaduría Pública, Sonia Tejedor, asignó la calificación definitiva de 5,0 (cinco coma cero), conforme a los criterios de evaluación establecidos para este tipo de práctica."], ["Solicitud de reconocimiento en dos programas", "La estudiante solicita que la práctica desarrollada sea reconocida como requisito académico tanto para el Programa de Contaduría Pública como para el Programa de Administración de Empresas. La presente acta registra la solicitud; su análisis y decisión corresponden a las instancias académicas competentes."], ["Cierre", "Con la firma de la presente acta se deja constancia del reconocimiento de la práctica profesional y de la calificación obtenida en el Programa de Contaduría Pública."]], "compromisos": [["Cargar o verificar la calificación definitiva (5,0) en el sistema académico.", "Harvey Sanabria", "17/11/2026"], ["Remitir la solicitud de reconocimiento de la práctica en ambos programas a las instancias académicas competentes.", "Harvey Sanabria", "17/11/2026"]], "firmantes": [{"rol": "Coordinación de Prácticas", "nombre": "Harvey Sanabria", "cargo": "Coordinación de Prácticas", "correo": "jsanabria@usbbog.edu.co"}, {"rol": "Directora de Programa", "nombre": "Sonia Tejedor", "cargo": "Directora del Programa de Contaduría Pública", "correo": ""}, {"rol": "Estudiante", "nombre": "Jessica Alejandra Valbuena Franco", "cargo": "Estudiante", "correo": "javalbuenaf@academia.usbbog.edu.co"}]}};
+
+/* --- SHA-256 autocontenido --- */
+function sha256(ascii){function rr(v,a){return(v>>>a)|(v<<(32-a))}var mL=ascii.length*8,r='',words=[],h=sha256.h=sha256.h||[],k=sha256.k=sha256.k||[],pC=k.length,isC={},c=2;for(;pC<64;c++){if(!isC[c]){for(var i=0;i<313;i+=c)isC[i]=c;h[pC]=(Math.pow(c,.5)*4294967296)|0;k[pC++]=(Math.pow(c,1/3)*4294967296)|0}}ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';for(c=0;c<ascii.length;c++){var j=ascii.charCodeAt(c);if(j>>8)return'';words[c>>2]|=j<<((3-c)%4)*8}words[words.length]=(mL/4294967296)|0;words[words.length]=mL;for(j=0;j<words.length;){var w=words.slice(j,j+=16),oldH=h;h=h.slice(0,8);for(c=0;c<64;c++){var w15=w[c-15],w2=w[c-2],a=h[0],e=h[4],t1=h[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&h[5])^(~e&h[6]))+k[c]+(w[c]=(c<16)?w[c]:(w[c-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[c-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0),t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&h[1])^(a&h[2])^(h[1]&h[2]));h=[(t1+t2)|0].concat(h);h[4]=(h[4]+t1)|0}for(c=0;c<8;c++)h[c]=(h[c]+oldH[c])|0}for(c=0;c<8;c++)for(j=3;j+1;j--){var b=(h[c]>>(j*8))&255;r+=((b<16)?0:'')+b.toString(16)}return r}
+function hashTexto(s){return sha256(unescape(encodeURIComponent(s)))}
+
+var qs=new URLSearchParams(location.search);
+if(qs.get('api')) API_URL=qs.get('api');
+function $(s,c){return (c||document).querySelector(s)}
+function $$(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+var ACTA=null;
+
+function chipHoja(){var c=$('#chipHoja'); if(!c)return; if(API_URL){c.textContent='Hoja: conectada';c.classList.add('on');} else {c.textContent='Hoja: sin conectar';c.classList.remove('on');}}
+
+/* ---------- render ---------- */
+function slug(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'')}
+function filaDato(label,valor){return '<tr><td class="label-cell">'+esc(label)+'</td><td class="value-cell"><span>'+esc(valor)+'</span></td></tr>'}
+
+function render(a){
+  ACTA=a;
+  var e=a.estudiante, num=a.id+'-2026';
+  var dEst='';
+  dEst+=filaDato('Nombre completo:',e.nombre);
+  dEst+= e.documento ? filaDato('Documento / ID:',e.documento)
+    : '<tr><td class="label-cell">Documento / ID:</td><td class="value-cell"><input type="text" id="f_documento" placeholder="Lo registra la estudiante al firmar" autocomplete="off" inputmode="numeric"></td></tr>';
+  dEst+= e.programa ? filaDato('Programa académico:',e.programa)
+    : '<tr><td class="label-cell">Programa académico:</td><td class="value-cell"><select id="f_programa"><option value="">Lo registra la estudiante al firmar…</option><option>Contaduría Pública</option><option>Administración de Empresas</option></select></td></tr>';
+  if(e.correo) dEst+=filaDato('Correo institucional:',e.correo);
+  dEst+=filaDato('Escenario de práctica:',e.escenario);
+
+  var firmas=a.firmantes.map(function(f){
+    var correo=f.correo?'<span class="correo-fijo">'+esc(f.correo)+'</span>':'<input type="email" class="correo-input" placeholder="correo del firmante">';
+    return '<tr class="sig-row" data-rol="'+esc(f.rol)+'" data-nombre="'+esc(f.nombre)+'" data-cargo="'+esc(f.cargo)+'">'+
+      '<td style="font-weight:600;">'+esc(f.cargo)+'</td><td>'+esc(f.nombre)+'</td><td class="correo-cell">'+correo+'</td>'+
+      '<td class="sig-cell" data-signed="false"><button type="button" class="btn-firmar no-print">Firmar</button></td>'+
+      '<td class="fecha-cell">—</td></tr>';
+  }).join('');
+
+  var h='';
+  h+='<table><tr class="title-row"><td>'+esc(a.titulo)+'</td><td>Acta N°: '+esc(num)+'</td></tr></table>';
+  h+='<table><tr class="section-head"><td colspan="2">Datos de la reunión</td></tr>'+
+     filaDato('Fecha:',a.reunion.fecha)+filaDato('Lugar:',a.reunion.lugar)+
+     filaDato('Hora inicio:',a.reunion.horaInicio)+filaDato('Hora finalización:',a.reunion.horaFin)+'</table>';
+  h+='<table><tr class="section-head"><td colspan="2">Datos de la estudiante</td></tr>'+dEst+'</table>';
+  h+='<table><tr class="section-head"><td>Orden del día</td></tr><tr><td>'+a.orden.map(function(o,i){return (i+1)+'. '+esc(o)}).join('<br>')+'</td></tr></table>';
+  h+='<table><tr class="section-head"><td>Desarrollo de los temas</td></tr><tr><td class="just">'+a.desarrollo.map(function(x,i){return '<p><b>'+(i+1)+'. '+esc(x[0])+'.</b> '+esc(x[1])+'</p>'}).join('')+'</td></tr></table>';
+  h+='<div class="table-scroll"><table><tr class="section-head"><td style="width:40px;">No.</td><td>Compromisos</td><td style="width:140px;">Responsable</td><td style="width:120px;">Fecha estimada cierre</td></tr>'+
+     a.compromisos.map(function(c,i){return '<tr><td style="text-align:center;">'+(i+1)+'</td><td>'+esc(c[0])+'</td><td>'+esc(c[1])+'</td><td>'+esc(c[2])+'</td></tr>'}).join('')+'</table></div>';
+  h+='<div class="constancia">En constancia firman quienes participaron:</div>';
+  h+='<div class="table-scroll"><table class="sig-table"><tr><th>Rol</th><th>Nombre</th><th>Correo</th><th>Firma</th><th>Fecha</th></tr>'+firmas+'</table></div>';
+  h+='<div id="estadoFirmas" class="no-print"></div>';
+  h+='<div class="footnote">Este documento se anexa a la carpeta individual de la estudiante como evidencia del reconocimiento y cierre de su práctica profesional (caso especial heredado del período 2026-1).<br>'+
+     'Firma electrónica: cada firma queda ligada a un código de verificación (hash SHA-256) generado a partir de los datos del acta, el nombre del firmante y el momento de la firma, y se registra además en la hoja de control de la Coordinación de Prácticas.</div>';
+
+  var c=$('#contenido'); c.innerHTML=h;
+  c.dataset.cargada=a.id;
+  c.dataset.datos=JSON.stringify({id:a.id,numero:num,estudiante:e.nombre,documento:e.documento||'',programa:e.programa||''});
+  $('#tituloBarra').textContent='ACTA N° '+num+' · CASOS ESPECIALES · PRÁCTICAS PROFESIONALES';
+  $('#nActa').value=a.id;
+  $('#btnDescargar').disabled=false;
+  actualizarEstado();
+}
+
+/* ---------- carga por número ---------- */
+function cargar(n){
+  n=String(n||'').trim().replace(/[^0-9]/g,'');
+  if(n.length===1) n='0'+n;
+  var msg=$('#cargaMsg');
+  if(!n){msg.textContent='Escribe el número del acta (ej.: 03).';return;}
+  if(API_URL){
+    msg.textContent='Buscando el acta '+n+' en la hoja…';
+    fetch(API_URL+'?api=acta&n='+encodeURIComponent(n))
+      .then(function(r){return r.json()})
+      .then(function(j){
+        if(j&&j.ok&&j.acta){render(j.acta);msg.textContent='✓ Acta '+n+' cargada desde la hoja.';}
+        else if(ACTAS_LOCAL[n]){render(ACTAS_LOCAL[n]);msg.textContent='Acta '+n+' cargada desde la copia local ('+(j&&j.error||'no está en la hoja')+').';}
+        else msg.textContent='No encontrada: '+(j&&j.error||'el acta '+n+' no está en la pestaña "Actas" de la hoja.');
+      })
+      .catch(function(){
+        if(ACTAS_LOCAL[n]){render(ACTAS_LOCAL[n]);msg.textContent='Sin conexión con la hoja — acta '+n+' cargada desde la copia local.';}
+        else msg.textContent='Sin conexión con la hoja y el acta '+n+' no está en la copia local.';
+      });
+  } else if(ACTAS_LOCAL[n]){ render(ACTAS_LOCAL[n]); msg.textContent='✓ Acta '+n+' cargada (copia local; hoja sin conectar).'; }
+  else msg.textContent='El acta '+n+' no está en la copia local y la hoja no está conectada (falta pegar la URL /exec en API_URL).';
+}
+$('#btnCargar').onclick=function(){cargar($('#nActa').value)};
+$('#nActa').addEventListener('keydown',function(e){if(e.key==='Enter')cargar(this.value)});
+
+/* ---------- estado ---------- */
+function actualizarEstado(){
+  var filas=$$('.sig-row'); if(!filas.length) return;
+  var firmadas=filas.filter(function(r){return $('.sig-cell',r).dataset.signed==='true'});
+  var e=$('#estadoFirmas'); if(!e) return;
+  e.textContent = firmadas.length===filas.length
+    ? '✓ Las '+filas.length+' firmas están completas — ya puedes descargar la versión final.'
+    : 'Firmas registradas: '+firmadas.length+' de '+filas.length+'.';
+}
+
+/* ---------- pad de firma ---------- */
+var filaActual=null, trazos=0;
+var pad=$('#sigPad'), ctx=pad.getContext('2d');
+function prepararPad(){var r=pad.getBoundingClientRect(),dpr=window.devicePixelRatio||1;pad.width=r.width*dpr;pad.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineWidth=2.2;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#0b2a6f';trazos=0}
+var dib=false,ult=null;
+function pos(e){var r=pad.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+pad.addEventListener('pointerdown',function(e){dib=true;ult=pos(e);pad.setPointerCapture(e.pointerId);ctx.beginPath();ctx.arc(ult.x,ult.y,1,0,Math.PI*2);ctx.fillStyle='#0b2a6f';ctx.fill()});
+pad.addEventListener('pointermove',function(e){if(!dib)return;var p=pos(e);ctx.beginPath();ctx.moveTo(ult.x,ult.y);ctx.lineTo(p.x,p.y);ctx.stroke();ult=p});
+function finTrazo(){if(dib)trazos++;dib=false}
+pad.addEventListener('pointerup',finTrazo);pad.addEventListener('pointercancel',finTrazo);pad.addEventListener('pointerleave',finTrazo);
+function pngFirma(){var o=document.createElement('canvas');o.width=pad.width;o.height=pad.height;var x=o.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,o.width,o.height);x.drawImage(pad,0,0);return o.toDataURL('image/png')}
+
+function abrirModal(fila){filaActual=fila;$('#modalTitulo').textContent='Firma de '+fila.dataset.nombre;$('#acepta').checked=false;$('#modalMsg').textContent='';$('#overlay').classList.add('open');setTimeout(prepararPad,30)}
+function cerrarModal(){$('#overlay').classList.remove('open');filaActual=null}
+$('#btnCancelar').onclick=cerrarModal; $('#btnBorrar').onclick=prepararPad;
+document.addEventListener('click',function(e){if(e.target.classList&&e.target.classList.contains('btn-firmar'))abrirModal(e.target.closest('.sig-row'))});
+
+function meta(){try{return JSON.parse($('#contenido').dataset.datos||'{}')}catch(e){return{}}}
+function datosEstudiante(){var m=meta(),doc=$('#f_documento'),prog=$('#f_programa');return{documento:doc?doc.value.trim():(m.documento||''),programa:prog?prog.value:(m.programa||'')}}
+
+$('#btnOk').onclick=function(){
+  var fila=filaActual; if(!fila) return;
+  var msg=$('#modalMsg'), m=meta();
+  var correoEl=$('.correo-input',fila);
+  var correo=correoEl?correoEl.value.trim():($('.correo-fijo',fila)?$('.correo-fijo',fila).textContent.trim():'');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)){msg.textContent='Escribe el correo del firmante en su fila de la tabla.';return}
+  if(fila.dataset.rol==='Estudiante'){
+    var de=datosEstudiante();
+    if($('#f_documento')&&!de.documento){msg.textContent='Registra tu documento o ID en "Datos de la estudiante".';return}
+    if($('#f_programa')&&!de.programa){msg.textContent='Selecciona tu programa en "Datos de la estudiante".';return}
+  }
+  if(trazos===0){msg.textContent='Dibuja tu firma en el recuadro.';return}
+  if(!$('#acepta').checked){msg.textContent='Debes marcar la casilla de conformidad.';return}
+
+  var ahora=new Date();
+  var fecha=ahora.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+ahora.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  var png=pngFirma(), de=datosEstudiante();
+  var hash=hashTexto([m.id,m.numero,m.estudiante,fila.dataset.rol,fila.dataset.nombre,correo,ahora.toISOString()].join('|'));
+
+  var celda=$('.sig-cell',fila);
+  celda.innerHTML='<img src="'+png+'" alt="firma"><div class="sig-code">Firmado ✓ · '+fecha+'<br>Cód: '+hash.slice(0,16)+'</div><div class="envio no-print"></div>';
+  celda.dataset.signed='true';celda.dataset.hash=hash;celda.dataset.fecha=fecha;celda.dataset.correo=correo;
+  $('.fecha-cell',fila).textContent=fecha;
+  if(correoEl){var s=document.createElement('span');s.className='correo-fijo';s.textContent=correo;correoEl.parentNode.replaceChild(s,correoEl)}
+  cerrarModal();actualizarEstado();
+  enviarHoja(fila,{acta:m.id,numero:m.numero,estudiante:m.estudiante,rol:fila.dataset.rol,cargo:fila.dataset.cargo,
+    nombre:fila.dataset.nombre,correo:correo,documento:de.documento,programa:de.programa,fecha:fecha,hash:hash,firma:png});
+};
+
+function enviarHoja(fila,datos){
+  var ind=$('.envio',fila);
+  if(!API_URL){if(ind){ind.textContent='Firma guardada en el acta (hoja sin conectar)';ind.className='envio no no-print'}return}
+  if(ind){ind.textContent='Enviando a la hoja…';ind.className='envio no-print'}
+  fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({accion:'registrarFirma',datos:datos})})
+    .then(function(r){return r.json()})
+    .then(function(j){if(j&&j.ok){ind.textContent='✓ Registrada en la hoja';ind.className='envio ok no-print';$('.sig-cell',fila).dataset.sent='true'}
+      else{ind.textContent='No llegó a la hoja: '+(j&&j.error||'error');ind.className='envio no no-print'}})
+    .catch(function(){if(ind){ind.textContent='No llegó a la hoja (sin conexión). La firma sí quedó en el acta.';ind.className='envio no no-print'}});
+}
+
+/* ---------- descargar (avance o versión final) ---------- */
+$('#btnDescargar').onclick=function(){
+  if(!$('#contenido').dataset.cargada) return;
+  var m=meta();
+  $$('input').forEach(function(i){i.setAttribute('value',i.value)});
+  $$('select').forEach(function(s){$$('option',s).forEach(function(o){if(o.value===s.value)o.setAttribute('selected','selected');else o.removeAttribute('selected')})});
+  var filas=$$('.sig-row'), completa=filas.length>0&&filas.every(function(r){return $('.sig-cell',r).dataset.signed==='true'});
+  var clon=document.documentElement.cloneNode(true);
+  if(completa){
+    $$('.no-print, .toolbar, .codigo-bar, .modal-overlay, script',clon).forEach(function(n){n.remove()});
+    $$('input, select',clon).forEach(function(el){
+      var s=document.createElement('span');
+      s.textContent=el.tagName==='SELECT'?(el.selectedIndex>=0?el.options[el.selectedIndex].text:''):el.getAttribute('value')||'';
+      el.parentNode.replaceChild(s,el);
+    });
+  } else {
+    $$('.modal-overlay',clon).forEach(function(n){n.classList.remove('open')});
+  }
+  var nombre='Acta_'+m.id+'-2026_'+slug(m.estudiante)+(completa?'_FINAL':'_en_firma')+'.html';
+  var blob=new Blob(['<!DOCTYPE html>'+clon.outerHTML],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nombre;
+  document.body.appendChild(a);a.click();a.remove();
+};
+
+/* ---------- inicio ---------- */
+chipHoja();
+(function(){
+  var c=$('#contenido');
+  if(c.dataset.cargada){ /* copia "en firma": el contenido ya viene en el archivo */
+    var m=meta();
+    $('#tituloBarra').textContent='ACTA N° '+m.numero+' · CASOS ESPECIALES · PRÁCTICAS PROFESIONALES';
+    $('#nActa').value=m.id; $('#btnDescargar').disabled=false;
+    $('#cargaMsg').textContent='Copia en proceso de firma del acta '+m.numero+'.';
+    $$('.sig-cell').forEach(function(cel){if(cel.dataset.signed==='true'){var b=$('.btn-firmar',cel);if(b)b.remove()}});
+    actualizarEstado();
+  } else if(qs.get('acta')){ cargar(qs.get('acta')); }
+})();
+</script>
+</body></html>
