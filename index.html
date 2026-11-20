@@ -223,7 +223,7 @@ function cargar(n){
     fetch(API_URL+'?api=acta&n='+encodeURIComponent(n))
       .then(function(r){return r.json()})
       .then(function(j){
-        if(j&&j.ok&&j.acta){render(j.acta);msg.textContent='✓ Acta '+n+' cargada desde la hoja.';}
+        if(j&&j.ok&&j.acta){render(j.acta);msg.textContent='✓ Acta '+n+' cargada desde la hoja. Buscando firmas registradas…';cargarFirmas(n);}
         else if(ACTAS_LOCAL[n]){render(ACTAS_LOCAL[n]);msg.textContent='Acta '+n+' cargada desde la copia local ('+(j&&j.error||'no está en la hoja')+').';}
         else msg.textContent='No encontrada: '+(j&&j.error||'el acta '+n+' no está en la pestaña "Actas" de la hoja.');
       })
@@ -236,6 +236,37 @@ function cargar(n){
 }
 $('#btnCargar').onclick=function(){cargar($('#nActa').value)};
 $('#nActa').addEventListener('keydown',function(e){if(e.key==='Enter')cargar(this.value)});
+
+/* ---------- firmas ya registradas en la hoja ---------- */
+function norm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim()}
+function cargarFirmas(n){
+  var msg=$('#cargaMsg');
+  fetch(API_URL+'?api=firmas&n='+encodeURIComponent(n))
+    .then(function(r){return r.json()})
+    .then(function(j){
+      if(!j||!j.ok){msg.textContent='✓ Acta '+n+' cargada. No se pudieron leer las firmas anteriores ('+(j&&j.error||'actualiza el Apps Script')+').';return}
+      var puestas=0;
+      (j.firmas||[]).forEach(function(f){
+        var fila=$$('.sig-row').filter(function(r){return norm(r.dataset.nombre)===norm(f.nombre)})[0];
+        if(!fila) return;
+        var celda=$('.sig-cell',fila); if(celda.dataset.signed==='true') return;
+        celda.innerHTML=(f.img?'<img src="'+f.img+'" alt="firma">':'<b>Firmado</b>')+
+          '<div class="sig-code">Firmado ✓ · '+esc(f.fecha)+'<br>Cód: '+esc(String(f.hash||'').slice(0,16))+'</div>'+
+          '<div class="envio ok no-print">✓ Registrada en la hoja</div>';
+        celda.dataset.signed='true';celda.dataset.sent='true';celda.dataset.hash=f.hash||'';celda.dataset.fecha=f.fecha||'';celda.dataset.correo=f.correo||'';
+        $('.fecha-cell',fila).textContent=f.fecha||'';
+        var ci=$('.correo-input',fila); if(ci&&f.correo){var s=document.createElement('span');s.className='correo-fijo';s.textContent=f.correo;ci.parentNode.replaceChild(s,ci)}
+        if(fila.dataset.rol==='Estudiante'){
+          var d=$('#f_documento'); if(d&&f.documento){d.value=f.documento;d.readOnly=true}
+          var pr=$('#f_programa'); if(pr&&f.programa){pr.value=f.programa;pr.disabled=true}
+        }
+        puestas++;
+      });
+      msg.textContent='✓ Acta '+n+' cargada desde la hoja · '+(puestas?puestas+' firma(s) ya registrada(s).':'aún sin firmas.');
+      actualizarEstado();
+    })
+    .catch(function(){msg.textContent='✓ Acta '+n+' cargada. No se pudo consultar las firmas anteriores (sin conexión).'});
+}
 
 /* ---------- estado ---------- */
 function actualizarEstado(){
